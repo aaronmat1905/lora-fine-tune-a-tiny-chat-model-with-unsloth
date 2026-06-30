@@ -24,7 +24,7 @@ def count_total_parameters(model):
     """Return the total number of parameters in `model` as a Python int."""
     # TODO: sum p.numel() over every parameter tensor in the module
     num_params = sum(
-        p.numel() for p in model.parameters() if p.requires_grad
+        p.numel() for p in model.parameters()
     )
     return num_params
 
@@ -181,8 +181,12 @@ def build_sft_trainer(model, tokenizer, dataset, training_args, max_seq_length=2
         packing=False,
     )
 
-# Step 17 - run_sft_training (not yet solved)
-# TODO: implement
+# Step 17 - run_sft_training
+def run_sft_training(trainer):
+    """Run a few SFT steps and return the final training loss as a float."""
+    # TODO: drive the trainer through its short optimization run and return the final loss
+    trainopt = trainer.train()
+    return float(trainopt.training_loss)
 
 # Step 18 - switch_to_inference_mode (not yet solved)
 # TODO: implement
