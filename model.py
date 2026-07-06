@@ -16,7 +16,7 @@ def load_base_model_and_tokenizer(model_name='unsloth/Qwen2.5-0.5B-Instruct-bnb-
         (model, tokenizer)
     """
     # TODO: call FastLanguageModel.from_pretrained with 4-bit loading and return (model, tokenizer)
-    model, tokenizer = FastLanguageModel.from_pretrained(model_name = model_name, max_seq_length = 256, load_in_4bit=True)
+    model, tokenizer = FastLanguageModel.from_pretrained(model_name = model_name, max_seq_length = max_seq_length, load_in_4bit=True)
     return model, tokenizer
 
 # Step 2 - count_total_parameters
