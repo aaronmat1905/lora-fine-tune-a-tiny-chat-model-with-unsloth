@@ -167,18 +167,33 @@ def build_training_arguments(output_dir='./sft_out', max_steps=5, learning_rate=
         )
 
 # Step 16 - build_sft_trainer
-import trl 
+# ── Step 016  build_sft_trainer ──
+import inspect
+import trl
 
 def build_sft_trainer(model, tokenizer, dataset, training_args, max_seq_length=256):
     """Construct a trl SFTTrainer over dataset['text'] ready to .train()."""
-    return trl.SFTTrainer(
-        model=model,
-        tokenizer=tokenizer,
-        train_dataset=dataset,
+
+    # training_args is a plain transformers.TrainingArguments (from Step 015).
+    # SFTConfig is a superset of TrainingArguments, but to_dict() can include
+    # legacy/deprecated fields (e.g. push_to_hub_token) that this trl version's
+    # SFTConfig no longer accepts. Filter down to only the accepted parameter names.
+    raw_kwargs = training_args.to_dict()
+    accepted_params = set(inspect.signature(trl.SFTConfig.__init__).parameters)
+    safe_kwargs = {k: v for k, v in raw_kwargs.items() if k in accepted_params}
+
+    sft_config = trl.SFTConfig(
+        **safe_kwargs,
         dataset_text_field="text",
         max_seq_length=max_seq_length,
-        args=training_args,
         packing=False,
+    )
+
+    return trl.SFTTrainer(
+        model=model,
+        processing_class=tokenizer,
+        train_dataset=dataset,
+        args=sft_config,
     )
 
 # Step 17 - run_sft_training
